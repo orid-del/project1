@@ -1,5 +1,5 @@
 var gBoard = []
-var gLevel = { SIZE: 4, MINES: 2 }
+var gLevel = { SIZE: 8, MINES: 4 }
 var freeToMove = true
 var firstClickIndicetor = false
 var lives = 3
@@ -107,10 +107,21 @@ function onCellClicked(elCell, i, j) {
         setTimeout(() => {
             elButton.innerText = '😃'
         }, 3000)
-        if (lives === 0) {
+        if (lives === 1) {
             freeToMove = false
         }
         lives--
+    }
+    else if(gBoard[i][j].minesAroundCount === 0 ){
+        for (var iOffSet = -1 ; iOffSet <= 1 ; iOffSet++ ){
+            for (var jOffSet = -1 ; jOffSet <= 1 ; jOffSet++){
+                if (i + iOffSet >= 0 && i +iOffSet < gLevel.SIZE && j + jOffSet >= 0 && j +jOffSet <gLevel.SIZE){
+                    if (gBoard[i][j].isShown  && !gBoard[i][j].isMine ){
+                        onCellClicked(elCell,i + iOffSet , j +jOffSet)   
+                    }
+                }
+            }
+        }
     }
 
 
