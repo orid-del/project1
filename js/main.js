@@ -1,9 +1,16 @@
-var gBoard = []
-var gLevel = { SIZE: 8, MINES: 4 }
-var freeToMove = true
-var firstClickIndicetor = false
-var lives = 3
-function onInit() {
+var gBoard
+var levels = [{ SIZE: 4, MINES: 2 }, { SIZE: 8, MINES: 14 }, { SIZE: 12, MINES: 32 }]
+var gLevel
+var freeToMove
+var firstClickIndicetor
+var lives
+
+function onInit(userOption) {
+    gLevel = levels[userOption]
+    gBoard = []
+    freeToMove = true
+    firstClickIndicetor = false
+    lives = 3
     buildBoard()
     renderBoard(gBoard)
     for (var i = 0; i < gLevel.SIZE; i++) {
@@ -41,8 +48,6 @@ function createRandomMines(gBoard) {
 
 function renderBoard(gBoard) {
     if (freeToMove) {
-
-
         var elBoard = document.querySelector('table')
         var strHTML = ''
         for (var i = 0; i < gBoard.length; i++) {
@@ -52,22 +57,34 @@ function renderBoard(gBoard) {
                 if (cell.isMine && cell.isShown) {
                     strHTML += `<td class="bomb"></td>`
                 }
+                else if (cell.isFlagged) {
+                    strHTML += `<td class="cellHide">?</td>`
+
+
+                }
                 else if (!cell.isShown) {
-                    strHTML += `<td class="cellHide" onClick="onCellClicked(this,${i},${j})"></td>`
+                    strHTML += `<td class="cellHide" oncontextmenu = "onCellMarked(this,${i},${j})" onClick="onCellClicked(this,${i},${j})"></td>`
                 }
                 else {
-                    if (gBoard[i][j].minesAroundCount === 0 ) {
+                    if (gBoard[i][j].minesAroundCount === 0) {
                         strHTML += `<td class="cellShown"></td>`
                     }
-                    else{
+                    else {
                         strHTML += `<td class="cellShown">${gBoard[i][j].minesAroundCount}</td>`
                     }
-
                 }
             }
             strHTML += '</tr>'
         }
         elBoard.innerHTML = strHTML
+    }
+    var checkVictory = checkGameOver()
+    if (checkVictory === true) {
+        alert('You won!')
+        var elButton = document.querySelector('span')
+        elButton.innerText = '😎'
+        freeToMove = false
+        return
     }
 }
 
@@ -94,6 +111,9 @@ function setMinesNegsCount(gBoard) {
 }
 
 function onCellClicked(elCell, i, j) {
+    if (i < 0 || i >= gLevel.SIZE || j < 0 || j >= gLevel.SIZE || gBoard[i][j].isShown) {
+        return
+    }
     gBoard[i][j].isShown = true
     if (!firstClickIndicetor) {
         createRandomMines((gBoard))
@@ -112,19 +132,49 @@ function onCellClicked(elCell, i, j) {
         }
         lives--
     }
-    else if(gBoard[i][j].minesAroundCount === 0 ){
-        for (var iOffSet = -1 ; iOffSet <= 1 ; iOffSet++ ){
-            for (var jOffSet = -1 ; jOffSet <= 1 ; jOffSet++){
-                if (i + iOffSet >= 0 && i +iOffSet < gLevel.SIZE && j + jOffSet >= 0 && j +jOffSet <gLevel.SIZE){
-                    if (gBoard[i][j].isShown  && !gBoard[i][j].isMine ){
-                        onCellClicked(elCell,i + iOffSet , j +jOffSet)   
-                    }
+    else if (gBoard[i][j].minesAroundCount === 0) {
+        expandShown(gBoard, elCell, i, j)
+    }
+
+}
+
+function expandShown(gBoard, elCell, i, j) {
+    for (var iOffSet = -1; iOffSet <= 1; iOffSet++) {
+        for (var jOffSet = -1; jOffSet <= 1; jOffSet++) {
+            if (i + iOffSet >= 0 && i + iOffSet < gLevel.SIZE && j + jOffSet >= 0 && j + jOffSet < gLevel.SIZE) {
+                if (gBoard[i][j].isShown === true && !gBoard[i][j].isMine) {
+                    onCellClicked(elCell, i + iOffSet, j + jOffSet)
                 }
             }
         }
     }
-
-
 }
+
+function checkGameOver() {
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            if (!gBoard[i][j].isMarked || !gBoard[i][j].isShown) {
+                return false
+            }
+        }
+    }
+    return true
+}
+
+function onCellMarked(ev, i, j) {
+    window.oncontextmenu = function () {
+        if (!gBoard[i][j].isFlagged) {
+            gBoard[i][j].isFlagged = true
+            renderBoard(gBoard)
+
+        }
+        else {
+            gBoard[i][j].isFlagged = false
+            renderBoard(gBoard)
+        }
+        return false
+    }, false
+}
+
 
 

@@ -6,15 +6,23 @@
     <link rel="stylesheet" href="css/main.css">
 </head>
 
-<body onload="onInit()">
+<body onload="onInit(1)">
+    <div class="level">
+        <button onclick="onInit(0)">Beginner</button>
+        <button onclick="onInit(1)">Medium</button>
+        <button onclick="onInit(2)">Expert</button>
+    </div>
 
     <table class="board-container">
     </table>
 
-    <div class="game-over-hide">
-        <h1 class="modal-msg"></h1>
-        <button onclick="onInit()">Restart <span>😃</span></button>
-    </div>
+    
+        
+    <button onclick="onInit(1)">Restart <span>😃</span></button>
+    <footer>
+        <h4>Created by Ori Dvori</h4>
+    </footer>
+    
 
     <script src="js/main.js"></script>
 </body>
