@@ -28,7 +28,7 @@ function buildBoard() {
                 minesAroundCount: 0,
                 isShown: false,
                 isMine: false,
-                isMarked: true
+                isMarked: false
             }
         }
     }
@@ -55,12 +55,10 @@ function renderBoard(gBoard) {
             for (var j = 0; j < gBoard[0].length; j++) {
                 var cell = gBoard[i][j]
                 if (cell.isMine && cell.isShown) {
-                    strHTML += `<td class="bomb"></td>`
+                    strHTML += `<td class="bomb">💣</td>`
                 }
-                else if (cell.isFlagged) {
-                    strHTML += `<td class="cellHide">?</td>`
-
-
+                else if (cell.isMarked) {
+                    strHTML += `<td class="cellMarked" oncontextmenu = "onCellMarked(this,${i},${j})" onClick="onCellClicked(this,${i},${j})"> ⚑</td>`
                 }
                 else if (!cell.isShown) {
                     strHTML += `<td class="cellHide" oncontextmenu = "onCellMarked(this,${i},${j})" onClick="onCellClicked(this,${i},${j})"></td>`
@@ -78,6 +76,8 @@ function renderBoard(gBoard) {
         }
         elBoard.innerHTML = strHTML
     }
+    var elLives = document.querySelector('.lives')
+    elLives.innerText = 'lives : ' + lives
     var checkVictory = checkGameOver()
     if (checkVictory === true) {
         alert('You won!')
@@ -119,7 +119,6 @@ function onCellClicked(elCell, i, j) {
         createRandomMines((gBoard))
         setMinesNegsCount(gBoard)
     }
-    renderBoard(gBoard)
     if (gBoard[i][j].isMine) {
         var elButton = document.querySelector('span')
         elButton.innerText = '🤯'
@@ -127,15 +126,16 @@ function onCellClicked(elCell, i, j) {
         setTimeout(() => {
             elButton.innerText = '😃'
         }, 3000)
-        if (lives === 1) {
+        if (lives < 1) {
             freeToMove = false
+            return
         }
         lives--
     }
     else if (gBoard[i][j].minesAroundCount === 0) {
         expandShown(gBoard, elCell, i, j)
     }
-
+    renderBoard(gBoard)
 }
 
 function expandShown(gBoard, elCell, i, j) {
@@ -153,8 +153,15 @@ function expandShown(gBoard, elCell, i, j) {
 function checkGameOver() {
     for (var i = 0; i < gLevel.SIZE; i++) {
         for (var j = 0; j < gLevel.SIZE; j++) {
-            if (!gBoard[i][j].isMarked || !gBoard[i][j].isShown) {
-                return false
+            if (gBoard[i][j].isMine) {
+                if (!gBoard[i][j].isMarked) {
+                    return false
+                }
+            }
+            else {
+                if (!gBoard[i][j].isShown) {
+                    return false
+                }
             }
         }
     }
@@ -163,18 +170,15 @@ function checkGameOver() {
 
 function onCellMarked(ev, i, j) {
     window.oncontextmenu = function () {
-        if (!gBoard[i][j].isFlagged) {
-            gBoard[i][j].isFlagged = true
+        if (!gBoard[i][j].isMarked) {
+            gBoard[i][j].isMarked = true
             renderBoard(gBoard)
-
         }
         else {
-            gBoard[i][j].isFlagged = false
+            gBoard[i][j].isMarked = false
+            gBoard[i][j].isShown = false
             renderBoard(gBoard)
         }
         return false
     }, false
 }
-
-
-
