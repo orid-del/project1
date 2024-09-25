@@ -77,7 +77,7 @@ function renderBoard(gBoard) {
         elBoard.innerHTML = strHTML
     }
     var elLives = document.querySelector('.lives')
-    elLives.innerText = 'lives : ' + lives
+    elLives.innerText = lives + ' LIVES LEFT'
     var checkVictory = checkGameOver()
     if (checkVictory === true) {
         alert('You won!')
@@ -110,7 +110,14 @@ function setMinesNegsCount(gBoard) {
     firstClickIndicetor = true
 }
 
+function darkMode(){
+    var elBody = document.querySelector('body')
+    elBody.classList.toggle('darkmode')
+}
 function onCellClicked(elCell, i, j) {
+    if (lives < 1){
+        return
+    }
     if (i < 0 || i >= gLevel.SIZE || j < 0 || j >= gLevel.SIZE || gBoard[i][j].isShown) {
         return
     }
@@ -169,6 +176,9 @@ function checkGameOver() {
 }
 
 function onCellMarked(ev, i, j) {
+    if (lives <1 ){
+        return
+    }
     window.oncontextmenu = function () {
         if (!gBoard[i][j].isMarked) {
             gBoard[i][j].isMarked = true
