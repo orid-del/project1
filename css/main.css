@@ -1,11 +1,11 @@
-body{
+body {
     background: url("../img/mine.jpg") no-repeat center center fixed;
     background-size: cover;
-   
 }
+
 table {
     text-align: center;
-    margin: 50px auto; 
+    margin: 50px auto;
 }
 
 td {
@@ -13,7 +13,6 @@ td {
     height: 40px;
     text-align: center;
     border: 5px solid;
-
 }
 
 .cellHide {
@@ -35,19 +34,17 @@ button {
     background-color: aqua;
 }
 
- div button{
+div button {
     text-align: center;
     width: 100px;
-
     border: 3px solid green;
-    
 }
 
-.cellMarked{
+.cellMarked {
     background-color: orange;
 }
 
-.lives{
+.lives {
     font-size: 14pt;
     color: rgb(219, 8, 8);
     text-align: center;
@@ -55,15 +52,14 @@ button {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-h4{
+h4 {
     font-size: 20px;
     font-family: Arial, Helvetica, sans-serif;
     text-align: center;
 }
 
-.darkmode{
-    color: white;
+.dark-mode {
     background-image: none;
     background-color: black;
-
+    color: white;
 }

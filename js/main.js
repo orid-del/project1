@@ -110,12 +110,15 @@ function setMinesNegsCount(gBoard) {
     firstClickIndicetor = true
 }
 
-function darkMode(){
+function darkMode() {
     var elBody = document.querySelector('body')
-    elBody.classList.toggle('darkmode')
+    var elDiv = document.querySelector('.div')
+    elBody.classList.toggle('dark-mode')
+    elDiv.classList.toggle('dark-mode')
 }
+
 function onCellClicked(elCell, i, j) {
-    if (lives < 1){
+    if (lives < 1) {
         return
     }
     if (i < 0 || i >= gLevel.SIZE || j < 0 || j >= gLevel.SIZE || gBoard[i][j].isShown) {
@@ -176,7 +179,7 @@ function checkGameOver() {
 }
 
 function onCellMarked(ev, i, j) {
-    if (lives <1 ){
+    if (lives < 1) {
         return
     }
     window.oncontextmenu = function () {
